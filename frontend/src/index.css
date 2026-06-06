@@ -270,3 +270,27 @@ tr:hover td { background: var(--surface-2); }
   border-color: var(--primary); background: var(--primary-glow);
 }
 .drop-zone.dragging { animation: glowPulse 1s infinite; }
+
+/* Input fix for checkout and forms */
+input, textarea, select {
+  color: #F0F0F0 !important;
+  background: #1A1A1A !important;
+  -webkit-text-fill-color: #F0F0F0 !important;
+}
+input::placeholder, textarea::placeholder {
+  color: #555555 !important;
+  -webkit-text-fill-color: #555555 !important;
+}
+input:focus, textarea:focus, select:focus {
+  color: #F0F0F0 !important;
+  -webkit-text-fill-color: #F0F0F0 !important;
+  background: #1A1A1A !important;
+}
+/* Fix iOS autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #F0F0F0 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1A1A1A inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
