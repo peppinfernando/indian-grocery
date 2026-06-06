@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart, useAuth, useToast } from '../context/AppContext';
 import { createOrder } from '../hooks/useApi';
@@ -11,26 +11,26 @@ export default function CheckoutPage() {
   const delivery = subtotal >= 50 ? 0 : 3.50;
   const total = subtotal + delivery;
 
-  const [form, setForm] = useState({
-    name: user?.name || '',
-    phone: '',
-    line1: '', line2: '', city: 'Cork', postcode: '', instructions: '',
-    notes: ''
-  });
+  const [name, setName] = useState(user?.name || '');
+  const [phone, setPhone] = useState('');
+  const [line1, setLine1] = useState('');
+  const [line2, setLine2] = useState('');
+  const [city, setCity] = useState('Cork');
+  const [postcode, setPostcode] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
   if (items.length === 0) { navigate('/cart'); return null; }
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
   const validate = () => {
     const e = {};
-    if (!form.name.trim()) e.name = 'Required';
-    if (!form.phone.trim()) e.phone = 'Required';
-    if (!form.line1.trim()) e.line1 = 'Required';
-    if (!form.city.trim()) e.city = 'Required';
-    if (!form.postcode.trim()) e.postcode = 'Required';
+    if (!name.trim()) e.name = 'Required';
+    if (!phone.trim()) e.phone = 'Required';
+    if (!line1.trim()) e.line1 = 'Required';
+    if (!city.trim()) e.city = 'Required';
+    if (!postcode.trim()) e.postcode = 'Required';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -41,39 +41,37 @@ export default function CheckoutPage() {
     try {
       const orderData = {
         customer_id: user?.customer_id || null,
-        guest_name: user ? null : form.name,
-        guest_phone: user ? null : form.phone,
+        guest_name: user ? null : name,
+        guest_phone: user ? null : phone,
         items: items.map(i => ({ ...i })),
         delivery_address: {
-          label: 'Home', line1: form.line1, line2: form.line2,
-          city: form.city, postcode: form.postcode, instructions: form.instructions
+          label: 'Home', line1, line2, city, postcode, instructions
         },
-        notes: form.notes || null
+        notes: notes || null
       };
       const order = await createOrder(orderData);
       clearCart();
       navigate('/order-confirmation', { state: { order } });
-    } catch (err) {
+    } catch {
       showToast('Something went wrong. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const Field = ({ label, field, placeholder, type = 'text' }) => (
-    <div className="form-group">
-      <label className="form-label">{label}</label>
-      <input
-        type={type}
-        className="form-input"
-        placeholder={placeholder}
-        value={form[field]}
-        onChange={e => set(field, e.target.value)}
-        style={errors[field] ? { borderColor: 'var(--danger)' } : {}}
-      />
-      {errors[field] && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors[field]}</span>}
-    </div>
-  );
+  const inputStyle = (field) => ({
+    width: '100%',
+    padding: '12px 16px',
+    border: `1.5px solid ${errors[field] ? 'var(--danger)' : 'var(--border)'}`,
+    borderRadius: 'var(--radius-md)',
+    background: 'var(--surface-2)',
+    color: 'var(--text)',
+    fontSize: '15px',
+    outline: 'none',
+    fontFamily: 'var(--font-body)',
+    WebkitTextFillColor: 'var(--text)',
+    boxSizing: 'border-box',
+  });
 
   return (
     <div className="page-content fade-up">
@@ -83,41 +81,106 @@ export default function CheckoutPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)', gap: 24 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
             {/* Contact */}
             <div className="card" style={{ padding: '20px 24px' }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Contact Details</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16, fontFamily: 'var(--font-display)' }}>Contact Details</h3>
               <div style={{ display: 'grid', gap: 14 }}>
-                <Field label="Full Name *" field="name" placeholder="Your name" />
-                <Field label="Phone Number *" field="phone" placeholder="+353..." type="tel" />
+                <div className="form-group">
+                  <label className="form-label">Full Name *</label>
+                  <input
+                    type="text"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    style={inputStyle('name')}
+                  />
+                  {errors.name && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors.name}</span>}
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    placeholder="+353..."
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    style={inputStyle('phone')}
+                  />
+                  {errors.phone && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors.phone}</span>}
+                </div>
               </div>
             </div>
 
             {/* Delivery */}
             <div className="card" style={{ padding: '20px 24px' }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Delivery Address</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16, fontFamily: 'var(--font-display)' }}>Delivery Address</h3>
               <div style={{ display: 'grid', gap: 14 }}>
-                <Field label="Address Line 1 *" field="line1" placeholder="House number & street" />
-                <Field label="Address Line 2" field="line2" placeholder="Apartment, area (optional)" />
+                <div className="form-group">
+                  <label className="form-label">Address Line 1 *</label>
+                  <input
+                    type="text"
+                    placeholder="House number & street"
+                    value={line1}
+                    onChange={e => setLine1(e.target.value)}
+                    style={inputStyle('line1')}
+                  />
+                  {errors.line1 && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors.line1}</span>}
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Address Line 2</label>
+                  <input
+                    type="text"
+                    placeholder="Apartment, area (optional)"
+                    value={line2}
+                    onChange={e => setLine2(e.target.value)}
+                    style={inputStyle('line2')}
+                  />
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                  <Field label="City *" field="city" placeholder="Cork" />
-                  <Field label="Eircode *" field="postcode" placeholder="T12 XXXX" />
+                  <div className="form-group">
+                    <label className="form-label">City *</label>
+                    <input
+                      type="text"
+                      placeholder="Cork"
+                      value={city}
+                      onChange={e => setCity(e.target.value)}
+                      style={inputStyle('city')}
+                    />
+                    {errors.city && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors.city}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Eircode *</label>
+                    <input
+                      type="text"
+                      placeholder="T12 XXXX"
+                      value={postcode}
+                      onChange={e => setPostcode(e.target.value)}
+                      style={inputStyle('postcode')}
+                    />
+                    {errors.postcode && <span style={{ fontSize: 12, color: 'var(--danger)' }}>{errors.postcode}</span>}
+                  </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Delivery Instructions</label>
-                  <input className="form-input" placeholder="Ring bell, leave at door…" value={form.instructions} onChange={e => set('instructions', e.target.value)} />
+                  <input
+                    type="text"
+                    placeholder="Ring bell, leave at door…"
+                    value={instructions}
+                    onChange={e => setInstructions(e.target.value)}
+                    style={inputStyle('instructions')}
+                  />
                 </div>
               </div>
             </div>
 
             {/* Notes */}
             <div className="card" style={{ padding: '20px 24px' }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Order Notes</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16, fontFamily: 'var(--font-display)' }}>Order Notes</h3>
               <textarea
-                className="form-input"
-                style={{ resize: 'vertical', minHeight: 80 }}
-                placeholder="Any special requests or notes for your order…"
-                value={form.notes}
-                onChange={e => set('notes', e.target.value)}
+                placeholder="Any special requests…"
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                style={{ ...inputStyle('notes'), minHeight: 80, resize: 'vertical' }}
               />
             </div>
           </div>
@@ -125,8 +188,8 @@ export default function CheckoutPage() {
           {/* Summary */}
           <div>
             <div className="card" style={{ padding: '20px 24px', position: 'sticky', top: 80 }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14 }}>Order Summary</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, fontFamily: 'var(--font-display)' }}>Order Summary</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
                 {items.map(i => (
                   <div key={i.product_id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                     <span style={{ color: 'var(--text-muted)', flex: 1 }}>{i.product_name} × {i.quantity}</span>
@@ -137,18 +200,23 @@ export default function CheckoutPage() {
               <hr />
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14, marginTop: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Subtotal</span><span>€{subtotal.toFixed(2)}</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
+                  <span>€{subtotal.toFixed(2)}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Delivery</span>
-                  <span>{delivery === 0 ? <span style={{ color: 'var(--primary)', fontWeight: 600 }}>FREE</span> : `€${delivery.toFixed(2)}`}</span>
+                  <span>{delivery === 0
+                    ? <span style={{ color: 'var(--primary)', fontWeight: 700 }}>FREE</span>
+                    : `€${delivery.toFixed(2)}`}
+                  </span>
                 </div>
                 <hr />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 18 }}>
-                  <span>Total</span><span style={{ color: 'var(--primary)' }}>€{total.toFixed(2)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: 18 }}>
+                  <span>Total</span>
+                  <span style={{ color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>€{total.toFixed(2)}</span>
                 </div>
               </div>
-              <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-md)', padding: '10px 14px', fontSize: 12, color: 'var(--text-muted)', marginTop: 14 }}>
+              <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '10px 14px', fontSize: 12, color: 'var(--text-muted)', marginTop: 14, border: '1px solid var(--border)' }}>
                 💳 Payment on delivery · Cash or card accepted
               </div>
               <button
@@ -161,7 +229,9 @@ export default function CheckoutPage() {
               </button>
               {!user && (
                 <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 10 }}>
-                  Ordering as guest · <span style={{ color: 'var(--primary)', cursor: 'pointer' }} onClick={() => navigate('/login')}>Sign in</span> for faster reorder
+                  Ordering as guest ·{' '}
+                  <span style={{ color: 'var(--primary)', cursor: 'pointer' }} onClick={() => navigate('/login')}>Sign in</span>
+                  {' '}for faster reorder
                 </p>
               )}
             </div>
