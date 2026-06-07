@@ -3,6 +3,88 @@ import { useNavigate } from 'react-router-dom';
 import { getFeatured, getCategories, getSeasonal } from '../hooks/useApi';
 import { ProductCard } from '../components/Shared';
 
+
+function Footer() {
+  const WHATSAPP = '353895722935';
+  const waMsg = encodeURIComponent('Hi JK Seasonal! I have a question about my order.');
+
+  return (
+    <footer style={{
+      background: 'linear-gradient(160deg, #1B4332 0%, #2D6A4F 100%)',
+      color: '#fff', padding: '40px 20px 24px', marginTop: 40
+    }}>
+      <div className="container">
+        {/* Slogan */}
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 4vw, 26px)', fontWeight: 700, fontStyle: 'italic', color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>
+            "வீட்டு சுவையை உங்கள் வீட்டிற்கே"
+          </p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 4, letterSpacing: '0.03em' }}>
+            Bringing the taste of home, to your home
+          </p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            DELIVERING ACROSS CORK · LIMERICK · GALWAY
+          </p>
+        </div>
+
+        {/* Links */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 28, marginBottom: 36 }}>
+          {/* About */}
+          <div>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>JK Seasonal</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
+              Premium Indian groceries, fresh produce and authentic brands delivered to your door across Munster and beyond.
+            </p>
+          </div>
+
+          {/* Delivery */}
+          <div>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>Delivery Areas</p>
+            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {['Cork City & County', 'Limerick City & County', 'Galway City & County'].map(function(area) {
+                return <li key={area} style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: '#A8D5B5', fontSize: 10 }}>✦</span> {area}
+                </li>;
+              })}
+            </ul>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 8 }}>Free delivery on orders over €50</p>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>Contact Us</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <a href={'https://wa.me/' + WHATSAPP + '?text=' + waMsg}
+                target="_blank" rel="noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: '#25D366', color: '#fff', padding: '10px 16px',
+                  borderRadius: 'var(--radius-md)', fontSize: 13, fontWeight: 700,
+                  textDecoration: 'none', width: 'fit-content'
+                }}>
+                💬 WhatsApp Us
+              </a>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                Order queries, delivery questions and product availability — we reply fast on WhatsApp.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
+            © 2025 JK Seasonal. All rights reserved.
+          </p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>
+            உங்கள் நம்பகமான இந்திய மளிகை கடை — Your trusted Indian grocery store
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function HomePage() {
   const [featured, setFeatured] = useState([]);
   const [seasonal, setSeasonal] = useState([]);
@@ -76,9 +158,9 @@ export default function HomePage() {
       </div>
 
       {/* Delivery strip */}
-      <a href="https://wa.me/353895722935?text=Hi%20JK%20Seasonal!%20I%20have%20a%20question%20about%20my%20order." target="_blank" rel="noreferrer"
+      <a href="https://wa.me/353895722935?text=Hi%20JK%20Seasonal!%20I%20have%20a%20question." target="_blank" rel="noreferrer"
         style={{ background: 'var(--secondary)', color: '#fff', textAlign: 'center', padding: '10px 20px', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', display: 'block', textDecoration: 'none' }}>
-        🚚 FREE DELIVERY ON ORDERS OVER €50 &nbsp;&nbsp;·&nbsp;&nbsp; 💬 QUESTIONS? WHATSAPP US
+        🚚 FREE DELIVERY OVER €50 &nbsp;·&nbsp; Cork, Limerick & Galway &nbsp;·&nbsp; 💬 Questions? WhatsApp us
       </a>
 
       {/* Categories */}
@@ -151,6 +233,7 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
