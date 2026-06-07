@@ -17,10 +17,8 @@ function Footer() {
         {/* Slogan */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 4vw, 26px)', fontWeight: 700, fontStyle: 'italic', color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>
-            "வீட்டு சுவையை உங்கள் வீட்டிற்கே"
           </p>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 4, letterSpacing: '0.03em' }}>
-            Bringing the taste of home, to your home
           </p>
           <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
             DELIVERING ACROSS CORK · LIMERICK · GALWAY
