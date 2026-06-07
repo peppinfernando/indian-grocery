@@ -40,3 +40,5 @@ export const updateCustomer = (id, data) => api.patch(`/customers/${id}`, data).
 
 // Admin
 export const getDashboard = () => api.get('/admin/dashboard').then(r => r.data);
+
+export const getCustomers = () => api.get('/customers/').then(r => r.data);
