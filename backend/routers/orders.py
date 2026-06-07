@@ -5,8 +5,11 @@ from database import get_db, OrderDB
 from models.schemas import OrderCreate
 import uuid
 from datetime import datetime
+import urllib.parse
 
 router = APIRouter()
+
+WHATSAPP_NUMBER = "353894722935"  # Replace with your WhatsApp number
 
 def order_to_dict(o):
     return {
@@ -19,6 +22,30 @@ def order_to_dict(o):
         "created_at": o.created_at.isoformat() if o.created_at else None,
         "whatsapp_notified": o.whatsapp_notified
     }
+
+def build_whatsapp_message(order):
+    items_text = "\n".join([f"  • {i['product_name']} x{i['quantity']} — €{i['line_total']:.2f}" for i in order.items])
+    addr = order.delivery_address
+    address_text = f"{addr.get('line1','')}, {addr.get('city','')}, {addr.get('postcode','')}"
+    name = order.guest_name or "Customer"
+    msg = f"""🛒 New Order #{order.id}
+
+Customer: {name}
+Phone: {order.guest_phone or 'Registered user'}
+
+Items:
+{items_text}
+
+Subtotal: €{order.subtotal:.2f}
+Delivery: €{order.delivery_fee:.2f}
+Total: €{order.total:.2f}
+
+Delivery to:
+{address_text}
+{addr.get('instructions','') or ''}
+
+{f"Notes: {order.notes}" if order.notes else ''}"""
+    return msg.strip()
 
 @router.get("/", response_model=List[dict])
 def get_orders(customer_id: Optional[str] = None, status: Optional[str] = None, db: Session = Depends(get_db)):
@@ -54,7 +81,11 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
         whatsapp_notified=False
     )
     db.add(o); db.commit(); db.refresh(o)
-    return order_to_dict(o)
+    result = order_to_dict(o)
+    # Add WhatsApp notification URL for the admin
+    msg = build_whatsapp_message(o)
+    result["whatsapp_notify_url"] = f"https://wa.me/{WHATSAPP_NUMBER}?text={urllib.parse.quote(msg)}"
+    return result
 
 @router.patch("/{order_id}/status", response_model=dict)
 def update_order_status(order_id: str, status: str, db: Session = Depends(get_db)):
