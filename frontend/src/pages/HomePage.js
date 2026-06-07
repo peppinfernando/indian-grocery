@@ -3,47 +3,82 @@ import { useNavigate } from 'react-router-dom';
 import { getFeatured, getCategories, getSeasonal } from '../hooks/useApi';
 import { ProductCard } from '../components/Shared';
 
-const WHATSAPP = '353894722934';
 
 function Footer() {
+  const WHATSAPP = '353894722934';
+  const waMsg = encodeURIComponent('Hi JK Seasonal! I have a question about my order.');
+
   return (
-    <footer style={{ background: '#0F3D26', color: '#fff', padding: '32px 20px 20px', marginTop: 48 }}>
+    <footer style={{
+      background: 'linear-gradient(160deg, #1B4332 0%, #2D6A4F 100%)',
+      color: '#fff', padding: '40px 20px 24px', marginTop: 40
+    }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 24, marginBottom: 24 }}>
+        {/* Slogan */}
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 4vw, 26px)', fontWeight: 700, fontStyle: 'italic', color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>
+            "வீட்டு சுவையை உங்கள் வீட்டிற்கே"
+          </p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 4, letterSpacing: '0.03em' }}>
+            Bringing the taste of home, to your home
+          </p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>
+            DELIVERING ACROSS CORK · LIMERICK · GALWAY
+          </p>
+        </div>
+
+        {/* Links */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 28, marginBottom: 36 }}>
+          {/* About */}
           <div>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, fontStyle: 'italic', color: '#fff', marginBottom: 6 }}>JK Seasonal</p>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: 10 }}>
-              Premium Indian groceries delivered across Cork, Limerick & Galway.
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>JK Seasonal</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
+              Premium Indian groceries, fresh produce and authentic brands delivered to your door across Munster and beyond.
             </p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
-              "வீட்டு சுவையை உங்கள் வீட்டிற்கே"
-            </p>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 3 }}>Bringing the taste of home, to your home</p>
           </div>
+
+          {/* Delivery */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Delivery Areas</p>
-            {['Cork City & County', 'Limerick City & County', 'Galway City & County'].map(a => (
-              <p key={a} style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ color: '#5DB87A', fontSize: 9 }}>●</span> {a}
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>Delivery Areas</p>
+            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {['Cork City & County', 'Limerick City & County', 'Galway City & County'].map(function(area) {
+                return <li key={area} style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: '#A8D5B5', fontSize: 10 }}>✦</span> {area}
+                </li>;
+              })}
+            </ul>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 8 }}>Free delivery on orders over €50</p>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#A8D5B5' }}>Contact Us</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <a href={'https://wa.me/' + WHATSAPP + '?text=' + waMsg}
+                target="_blank" rel="noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: '#25D366', color: '#fff', padding: '10px 16px',
+                  borderRadius: 'var(--radius-md)', fontSize: 13, fontWeight: 700,
+                  textDecoration: 'none', width: 'fit-content'
+                }}>
+                💬 WhatsApp Us
+              </a>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                Order queries, delivery questions and product availability — we reply fast on WhatsApp.
               </p>
-            ))}
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 8 }}>Free delivery on orders over €50</p>
-          </div>
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Get in Touch</p>
-            <a href={'https://wa.me/' + WHATSAPP + '?text=Hi%20JK%20Seasonal!'}
-              target="_blank" rel="noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: '#25D366', color: '#fff', padding: '9px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, textDecoration: 'none', marginBottom: 8 }}>
-              💬 WhatsApp Us
-            </a>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
-              Order queries & delivery questions — fast replies guaranteed.
-            </p>
+            </div>
           </div>
         </div>
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 14, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
-          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>© 2025 JK Seasonal. All rights reserved.</p>
-          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>உங்கள் நம்பகமான இந்திய மளிகை கடை</p>
+
+        {/* Bottom bar */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
+            © 2025 JK Seasonal. All rights reserved.
+          </p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>
+            உங்கள் நம்பகமான இந்திய மளிகை கடை — Your trusted Indian grocery store
+          </p>
         </div>
       </div>
     </footer>
@@ -68,82 +103,95 @@ export default function HomePage() {
   return (
     <div className="page-content fade-up">
 
-      {/* Hero — compact, editorial */}
+      {/* Hero */}
       <div style={{
-        background: 'linear-gradient(135deg, #0F3D26 0%, #1A5C3A 100%)',
-        padding: '28px 20px', position: 'relative', overflow: 'hidden'
+        background: 'linear-gradient(160deg, #1B4332 0%, #2D6A4F 55%, #40916C 100%)',
+        padding: '52px 24px 60px', textAlign: 'center', position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
-        <div style={{ position: 'absolute', right: -40, top: -40, width: 200, height: 200, borderRadius: '50%', background: 'rgba(200,98,26,0.12)' }} />
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-            <div style={{ maxWidth: 480 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
-                Cork · Limerick · Galway
-              </p>
-              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px,5vw,34px)', fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 10, fontStyle: 'italic' }}>
-                Authentic Indian groceries,<br/>delivered to your door.
-              </h1>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 16, lineHeight: 1.6 }}>
-                Premium staples, seasonal produce and trusted brands — straight from source to your kitchen.
-              </p>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <button className="btn btn-lg" style={{ background: '#fff', color: 'var(--primary)', fontWeight: 600, fontSize: 13 }} onClick={() => navigate('/shop')}>
-                  Shop Now →
-                </button>
-                <button className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontSize: 13 }} onClick={() => navigate('/shop?seasonal=true')}>
-                  🍂 Seasonal
-                </button>
-              </div>
-            </div>
-            {/* Stats strip */}
-            <div style={{ display: 'flex', gap: 20, flexShrink: 0 }}>
-              {[['200+', 'Products'], ['3', 'Cities'], ['Free', 'Over €50']].map(([val, lbl]) => (
-                <div key={lbl} style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1 }}>{val}</p>
-                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{lbl}</p>
-                </div>
-              ))}
-            </div>
+        {/* Subtle texture */}
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.05,
+          backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+          backgroundSize: '28px 28px'
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -60, right: -60, width: 280, height: 280,
+          borderRadius: '50%', background: 'rgba(224,122,47,0.15)', pointerEvents: 'none'
+        }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <p style={{
+            display: 'inline-block', fontSize: 12, fontWeight: 600,
+            color: 'rgba(255,255,255,0.7)', letterSpacing: '0.12em',
+            textTransform: 'uppercase', marginBottom: 16,
+            background: 'rgba(255,255,255,0.1)', padding: '5px 14px',
+            borderRadius: 99, border: '1px solid rgba(255,255,255,0.15)'
+          }}>🌿 Delivering across Cork & Munster</p>
+
+          <h1 style={{
+            fontFamily: 'var(--font-display)', fontSize: 'clamp(30px, 6vw, 50px)',
+            fontWeight: 700, lineHeight: 1.15, marginBottom: 16, color: '#fff',
+            fontStyle: 'italic', letterSpacing: '-0.01em'
+          }}>
+            Your trusted Indian<br />grocery store
+          </h1>
+
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', marginBottom: 32, maxWidth: 400, margin: '0 auto 32px', lineHeight: 1.7 }}>
+            Premium staples, seasonal produce, and authentic brands — delivered fresh to your door.
+          </p>
+
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn btn-lg" style={{ background: '#fff', color: 'var(--primary)', fontWeight: 700 }} onClick={() => navigate('/shop')}>
+              Shop Now →
+            </button>
+            <button className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.3)' }} onClick={() => navigate('/shop?seasonal=true')}>
+              🍂 Seasonal
+            </button>
           </div>
+
+          <p style={{ marginTop: 22, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
+            Already order on WhatsApp?{' '}
+            <span style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => navigate('/shop')}>
+              Browse the full catalogue →
+            </span>
+          </p>
         </div>
       </div>
 
       {/* Delivery strip */}
-      <a href={'https://wa.me/' + WHATSAPP + '?text=Hi%20JK%20Seasonal!%20I%20have%20a%20question.'}
-        target="_blank" rel="noreferrer"
-        style={{ background: 'var(--secondary)', color: '#fff', textAlign: 'center', padding: '8px 20px', fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', display: 'block', textDecoration: 'none' }}>
-        🚚 FREE DELIVERY OVER €50 &nbsp;·&nbsp; CORK · LIMERICK · GALWAY &nbsp;·&nbsp; 💬 QUESTIONS? WHATSAPP US
+      <a href="https://wa.me/353894722934?text=Hi%20JK%20Seasonal!%20I%20have%20a%20question." target="_blank" rel="noreferrer"
+        style={{ background: 'var(--secondary)', color: '#fff', textAlign: 'center', padding: '10px 20px', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', display: 'block', textDecoration: 'none' }}>
+        🚚 FREE DELIVERY OVER €50 &nbsp;·&nbsp; Cork, Limerick & Galway &nbsp;·&nbsp; 💬 Questions? WhatsApp us
       </a>
 
       {/* Categories */}
-      <div className="container" style={{ marginTop: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <h2 className="section-title" style={{ marginBottom: 0, fontSize: 18 }}>Shop by Category</h2>
-        </div>
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
+      <div className="container" style={{ marginTop: 32 }}>
+        <h2 className="section-title">Shop by Category</h2>
+        <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
           {categories.map(cat => (
-            <button key={cat.id} onClick={() => navigate('/shop?category=' + encodeURIComponent(cat.name))}
+            <button key={cat.id} onClick={() => navigate(`/shop?category=${encodeURIComponent(cat.name)}`)}
               style={{
-                flex: '0 0 auto', background: 'var(--surface)', border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-lg)', padding: '10px 14px', cursor: 'pointer',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-                minWidth: 72, transition: 'all 0.18s',
+                flex: '0 0 auto', background: 'var(--surface)', border: '1.5px solid var(--border)',
+                borderRadius: 'var(--radius-lg)', padding: '14px 16px', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
+                minWidth: 80, transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'none'; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
             >
-              <span style={{ fontSize: 22 }}>{cat.icon}</span>
-              <span style={{ fontSize: 9, fontWeight: 600, textAlign: 'center', color: 'var(--text-muted)', lineHeight: 1.3, maxWidth: 64, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{cat.name}</span>
+              <span style={{ fontSize: 26 }}>{cat.icon}</span>
+              <span style={{ fontSize: 10, fontWeight: 600, textAlign: 'center', color: 'var(--text-muted)', lineHeight: 1.4, maxWidth: 70, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{cat.name}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Featured */}
-      <div className="container" style={{ marginTop: 28 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
-          <h2 className="section-title" style={{ marginBottom: 0 }}>Featured Products</h2>
+      <div className="container" style={{ marginTop: 36 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
+          <div>
+            <h2 className="section-title" style={{ marginBottom: 4 }}>Featured Products</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Our most loved items this week</p>
+          </div>
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/shop?featured=true')}>View all</button>
         </div>
         <div className="products-grid">
@@ -153,12 +201,12 @@ export default function HomePage() {
 
       {/* Seasonal */}
       {seasonal.length > 0 && (
-        <div style={{ background: 'linear-gradient(160deg, #FBF3EB, #F9F6F1)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)', marginTop: 32, padding: '24px 0' }}>
+        <div style={{ background: 'linear-gradient(160deg, #FEF6EC, #FDFAF5)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)', marginTop: 36, padding: '36px 0' }}>
           <div className="container">
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
               <div>
-                <h2 className="section-title" style={{ marginBottom: 2 }}>🍂 Seasonal Picks</h2>
-                <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Limited stock — order while available</p>
+                <h2 className="section-title" style={{ marginBottom: 4 }}>🍂 Seasonal Picks</h2>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Limited stock — order while available</p>
               </div>
               <button className="btn btn-ghost btn-sm" onClick={() => navigate('/shop?seasonal=true')}>View all</button>
             </div>
@@ -169,23 +217,22 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Trust strip */}
-      <div className="container" style={{ marginTop: 28, marginBottom: 8 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+      {/* Trust */}
+      <div className="container" style={{ marginTop: 36, marginBottom: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
           {[
-            { icon: '🌿', title: 'Fresh & Authentic', desc: 'Sourced from trusted Indian brands' },
-            { icon: '🚚', title: 'Cork · Limerick · Galway', desc: 'Fast delivery across Munster & Connacht' },
-            { icon: '💬', title: 'WhatsApp Support', desc: 'Quick replies on WhatsApp' },
+            { icon: '🌿', title: 'Fresh & Authentic', desc: 'Sourced directly from trusted Indian brands and suppliers' },
+            { icon: '🚚', title: 'Cork Delivery', desc: 'Fast local delivery across Cork & Munster' },
+            { icon: '💬', title: 'WhatsApp Support', desc: 'Order queries answered quickly on WhatsApp' },
           ].map(t => (
-            <div key={t.title} style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', padding: '16px 14px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
-              <div style={{ fontSize: 24, marginBottom: 7 }}>{t.icon}</div>
-              <h4 style={{ fontSize: 12, fontWeight: 600, marginBottom: 4, fontFamily: 'var(--font-display)', lineHeight: 1.3 }}>{t.title}</h4>
-              <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>{t.desc}</p>
+            <div key={t.title} style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', padding: '22px 18px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, marginBottom: 10 }}>{t.icon}</div>
+              <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, fontFamily: 'var(--font-display)' }}>{t.title}</h4>
+              <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{t.desc}</p>
             </div>
           ))}
         </div>
       </div>
-
       <Footer />
     </div>
   );

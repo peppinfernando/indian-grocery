@@ -9,7 +9,7 @@ import urllib.parse
 
 router = APIRouter()
 
-WHATSAPP_NUMBER = "353894722935"  # Replace with your WhatsApp number
+WHATSAPP_NUMBER = "353XXXXXXXXX"  # Replace with your WhatsApp number
 
 def order_to_dict(o):
     return {

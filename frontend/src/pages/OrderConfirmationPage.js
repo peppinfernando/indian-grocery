@@ -42,7 +42,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         <a
-          href={`https://wa.me/353894722934?text=${waMsg}`}
+          href={`https://wa.me/353XXXXXXXXX?text=${waMsg}`}
           target="_blank"
           rel="noreferrer"
           className="btn btn-secondary btn-lg"
