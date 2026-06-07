@@ -254,7 +254,7 @@ function StatCard({ icon, label, value, color = 'var(--primary)' }) {
   );
 }
 
-function DashboardTab({ data }) {
+function DashboardTab({ data, setTab }) {
   if (!data) return <div className="spinner" />;
   return (
     <div>
@@ -477,7 +477,7 @@ export default function AdminPage() {
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>← Storefront</button>
         </div>
         <AdminNav tab={tab} setTab={setTab} />
-        {tab === 'dashboard' && <DashboardTab data={dashData} />}
+        {tab === 'dashboard' && <DashboardTab data={dashData} setTab={setTab} />}
         {tab === 'products' && <ProductsTab />}
         {tab === 'orders' && <OrdersTab />}
         {tab === 'customers' && (
