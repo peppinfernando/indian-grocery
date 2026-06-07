@@ -3,8 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { login as loginApi, register as registerApi } from '../hooks/useApi';
 import { useAuth, useToast } from '../context/AppContext';
 
-const ADMIN_WA = '353894722935';
-
 export function LoginPage() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -17,9 +15,7 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Try as-is first, then with +353 prefix for short numbers
-      let phone = identifier.trim();
-      const data = await loginApi({ phone, password });
+      const data = await loginApi({ phone: identifier.trim(), password });
       login(data);
       showToast('Welcome back, ' + data.name + '!');
       navigate(data.is_admin ? '/admin' : '/account');
@@ -28,7 +24,7 @@ export function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  const inp = { padding: '13px 16px', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text)', fontSize: 15, outline: 'none', fontFamily: 'var(--font-body)', width: '100%', WebkitTextFillColor: 'var(--text)' };
+  const inp = { padding: '13px 16px', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text)', fontSize: 15, outline: 'none', fontFamily: 'var(--font-body)', width: '100%', WebkitTextFillColor: 'var(--text)', boxSizing: 'border-box' };
 
   return (
     <div className="page-content fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: 20 }}>
@@ -62,10 +58,64 @@ export function LoginPage() {
           </div>
           <hr />
           <div style={{ fontSize: 11, color: 'var(--text-light)', textAlign: 'center' }}>
-            Demo: +353871234567 / password123 | Admin: admin / admin123
+            Demo: +353871234567 / password123 &nbsp;|&nbsp; Admin: admin / admin123
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PhoneInput({ value, onChange }) {
+  const inp = {
+    padding: '13px 14px',
+    border: '1.5px solid var(--border)',
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    fontSize: 15,
+    outline: 'none',
+    fontFamily: 'var(--font-body)',
+    WebkitTextFillColor: 'var(--text)',
+    boxSizing: 'border-box',
+    flex: 1,
+    borderRadius: '0 var(--radius-md) var(--radius-md) 0',
+    borderLeft: 'none',
+    width: '100%',
+  };
+
+  return (
+    <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1.5px solid var(--border)' }}>
+      <div style={{
+        background: 'var(--surface-2)',
+        padding: '13px 14px',
+        fontSize: 14,
+        color: 'var(--text-muted)',
+        fontWeight: 600,
+        whiteSpace: 'nowrap',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        flexShrink: 0,
+        userSelect: 'none',
+        borderRight: '1.5px solid var(--border)',
+      }}>
+        🇮🇪 +353
+      </div>
+      <input
+        style={inp}
+        type="tel"
+        placeholder="87 123 4567"
+        value={value}
+        onChange={e => {
+          // Only allow digits, spaces, hyphens
+          const clean = e.target.value.replace(/[^0-9\s\-]/g, '');
+          onChange(clean);
+        }}
+        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
+        maxLength={12}
+        required
+      />
     </div>
   );
 }
@@ -84,17 +134,19 @@ export function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const fullPhone = phone.startsWith('+') ? phone : '+353' + phone.replace(/^0/, '');
+      // Build full phone: remove leading 0 if present, prepend +353
+      const digits = phone.replace(/\s/g, '').replace(/^0/, '');
+      const fullPhone = '+353' + digits;
       const data = await registerApi({ name, phone: fullPhone, password, email: email || null });
       login(data);
       showToast('Account created! Welcome, ' + data.name);
       navigate('/account');
     } catch (err) {
-      showToast(err.response?.data?.detail || 'Registration failed');
+      showToast((err.response && err.response.data && err.response.data.detail) || 'Registration failed');
     } finally { setLoading(false); }
   };
 
-  const inp = { padding: '13px 16px', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text)', fontSize: 15, outline: 'none', fontFamily: 'var(--font-body)', width: '100%', WebkitTextFillColor: 'var(--text)' };
+  const inp = { padding: '13px 16px', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text)', fontSize: 15, outline: 'none', fontFamily: 'var(--font-body)', width: '100%', WebkitTextFillColor: 'var(--text)', boxSizing: 'border-box' };
 
   return (
     <div className="page-content fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: 20 }}>
@@ -114,16 +166,8 @@ export function RegisterPage() {
             </div>
             <div className="form-group">
               <label className="form-label">Phone Number</label>
-              <div style={{ display: 'flex', gap: 0 }}>
-                <div style={{ ...inp, width: 'auto', flexShrink: 0, background: 'var(--surface-2)', borderRight: 'none', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)', color: 'var(--text-muted)', fontSize: 14, display: 'flex', alignItems: 'center', padding: '13px 12px', whiteSpace: 'nowrap' }}>
-                  🇮🇪 +353
-                </div>
-                <input style={{ ...inp, borderRadius: '0 var(--radius-md) var(--radius-md) 0', borderLeft: 'none' }}
-                  type="tel" placeholder="87 123 4567"
-                  value={phone} onChange={e => setPhone(e.target.value)}
-                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                  onBlur={e => e.target.style.borderColor = 'var(--border)'} required />
-              </div>
+              <PhoneInput value={phone} onChange={setPhone} />
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>Irish number — enter digits after +353 (e.g. 87 123 4567)</p>
             </div>
             <div className="form-group">
               <label className="form-label">Password</label>

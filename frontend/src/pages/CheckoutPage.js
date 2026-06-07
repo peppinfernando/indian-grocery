@@ -72,6 +72,10 @@ export default function CheckoutPage() {
   if (items.length === 0) { navigate('/cart'); return null; }
 
   const handleEircodeSearch = async () => {
+    // Validate eircode format (7 chars alphanumeric)
+    const clean = eircodeInput.replace(/\s/g, '').toUpperCase();
+    if (clean.length < 7) { showToast('Please enter a valid 7-character Eircode'); return; }
+    if (clean === 'T12A123' || clean === 'D02X285') { showToast('Please enter your actual Eircode'); return; }
     if (!eircodeInput.trim()) { showToast('Enter an Eircode first'); return; }
     setEircodeLoading(true);
     setEircodeFound(false);
@@ -125,7 +129,7 @@ export default function CheckoutPage() {
       const orderData = {
         customer_id: user?.customer_id || null,
         guest_name: user ? null : name,
-        guest_phone: user ? null : phone,
+        guest_phone: user ? null : ('+353' + phone.replace(/\s/g, '').replace(/^0/, '')),
         items: items.map(i => ({ ...i })),
         delivery_address: { label: 'Home', line1, line2, city, postcode, instructions },
         notes: notes || null
@@ -243,7 +247,7 @@ export default function CheckoutPage() {
               <div style={{ display: 'flex', gap: 8 }}>
                 <input
                   type="text"
-                  placeholder="Enter your Eircode"
+                  placeholder="e.g. T12 A123"
                   value={eircodeInput}
                   onChange={e => setEircodeInput(e.target.value.toUpperCase())}
                   onKeyDown={e => e.key === 'Enter' && handleEircodeSearch()}
