@@ -83,7 +83,6 @@ export function LoginPage() {
             New here? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600 }}>Create account</Link>
           </div>
           <hr />
-          <p style={{ fontSize: 10, color: 'var(--text-light)', textAlign: 'center' }}>Demo: +353871234567 / password123 &nbsp;|&nbsp; Admin: admin / admin123</p>
         </div>
       </div>
     </div>
