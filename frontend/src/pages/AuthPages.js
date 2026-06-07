@@ -62,7 +62,7 @@ export function LoginPage() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div className="form-group">
               <label className="form-label">Phone Number or Name</label>
-              <input style={inp} type="text" placeholder="+353 87 123 4567 or your name"
+              <input style={inp} type="text" placeholder="Name or mobile number"
                 value={identifier} onChange={e => setIdentifier(e.target.value)}
                 onFocus={e => e.target.style.borderColor = 'var(--primary)'}
                 onBlur={e => e.target.style.borderColor = 'var(--border)'} required />
