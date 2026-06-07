@@ -76,9 +76,10 @@ export default function HomePage() {
       </div>
 
       {/* Delivery strip */}
-      <div style={{ background: 'var(--secondary)', color: '#fff', textAlign: 'center', padding: '10px 20px', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em' }}>
-        🚚 FREE DELIVERY ON ORDERS OVER €50 · CORK & SURROUNDS
-      </div>
+      <a href="https://wa.me/353895722935?text=Hi%20JK%20Seasonal!%20I%20have%20a%20question%20about%20my%20order." target="_blank" rel="noreferrer"
+        style={{ background: 'var(--secondary)', color: '#fff', textAlign: 'center', padding: '10px 20px', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', display: 'block', textDecoration: 'none' }}>
+        🚚 FREE DELIVERY ON ORDERS OVER €50 &nbsp;&nbsp;·&nbsp;&nbsp; 💬 QUESTIONS? WHATSAPP US
+      </a>
 
       {/* Categories */}
       <div className="container" style={{ marginTop: 32 }}>

@@ -1,17 +1,7 @@
 import axios from 'axios';
 
-const getBaseURL = () => {
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
-  }
-  const hostname = window.location.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return '/api';
-  }
-  return `http://${hostname}:8000/api`;
-};
-
-const api = axios.create({ baseURL: getBaseURL() });
+const API_URL = 'https://jk-seasonal.onrender.com/api';
+const api = axios.create({ baseURL: API_URL });
 
 export const getProducts = (params) => api.get('/products/', { params }).then(r => r.data);
 export const getFeatured = () => api.get('/products/featured').then(r => r.data);
@@ -28,5 +18,6 @@ export const updateOrderStatus = (id, status) => api.patch(`/orders/${id}/status
 export const login = (data) => api.post('/auth/login', data).then(r => r.data);
 export const register = (data) => api.post('/auth/register', data).then(r => r.data);
 export const getCustomer = (id) => api.get(`/customers/${id}`).then(r => r.data);
+export const getCustomers = () => api.get('/customers/').then(r => r.data);
 export const updateCustomer = (id, data) => api.patch(`/customers/${id}`, data).then(r => r.data);
 export const getDashboard = () => api.get('/admin/dashboard').then(r => r.data);

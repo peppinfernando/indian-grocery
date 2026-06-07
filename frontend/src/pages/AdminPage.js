@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, useToast } from '../context/AppContext';
-import { getDashboard, getProducts, getOrders, getCategories, updateProduct, updateOrderStatus, deleteProduct } from '../hooks/useApi';
+import { getDashboard, getProducts, getOrders, getCategories, getCustomers, updateProduct, updateOrderStatus, deleteProduct } from '../hooks/useApi';
 
 const ADMIN_WHATSAPP = '353894722935';
 const CLOUD_NAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || '';
@@ -561,6 +561,136 @@ function CategoriesTab() {
   );
 }
 
+function CustomersTab() {
+  const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState(null);
+
+  useEffect(function() {
+    Promise.all([getCustomers(), getOrders()])
+      .then(function(results) { setCustomers(results[0]); setOrders(results[1]); })
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  var filtered = customers.filter(function(c) {
+    if (!search) return true;
+    var q = search.toLowerCase();
+    return (c.name && c.name.toLowerCase().includes(q)) ||
+           (c.phone && c.phone.toLowerCase().includes(q)) ||
+           (c.email && c.email.toLowerCase().includes(q));
+  });
+
+  var customerOrders = selected ? orders.filter(function(o) { return o.customer_id === selected.id; }) : [];
+  var totalSpend = customerOrders.reduce(function(s, o) { return s + (o.total || 0); }, 0);
+
+  if (loading) return React.createElement('div', { className: 'spinner' });
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 1fr' : '1fr', gap: 20 }}>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <h2 className="section-title" style={{ marginBottom: 0 }}>Customers ({filtered.length})</h2>
+        </div>
+        <input
+          type="text" placeholder="Search by name, phone or email..."
+          value={search} onChange={function(e) { setSearch(e.target.value); }}
+          style={{ width: '100%', padding: '10px 14px', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text)', fontSize: 14, outline: 'none', marginBottom: 14, fontFamily: 'var(--font-body)' }}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {filtered.map(function(c) {
+            var cOrders = orders.filter(function(o) { return o.customer_id === c.id; });
+            var spend = cOrders.reduce(function(s, o) { return s + (o.total || 0); }, 0);
+            return (
+              <div key={c.id} className="card" style={{ padding: '14px 18px', cursor: 'pointer', border: selected && selected.id === c.id ? '1.5px solid var(--primary)' : '1px solid var(--border-light)' }}
+                onClick={function() { setSelected(c); }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 16, flexShrink: 0 }}>
+                      {c.name ? c.name[0].toUpperCase() : '?'}
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: 700, fontSize: 14 }}>{c.name}</p>
+                      <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{c.phone}</p>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>EUR {spend.toFixed(2)}</p>
+                    <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{cOrders.length} orders</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          {filtered.length === 0 && (
+            <div className="empty-state" style={{ padding: '40px 20px' }}>
+              <div className="icon">👥</div>
+              <h3>No customers found</h3>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {selected && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700 }}>{selected.name}</h3>
+            <button className="btn btn-ghost btn-sm" onClick={function() { setSelected(null); }}>Close</button>
+          </div>
+          <div className="card" style={{ padding: '18px 20px', marginBottom: 14 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Contact</p>
+            <p style={{ fontSize: 14, marginBottom: 6 }}>📱 {selected.phone}</p>
+            {selected.email && <p style={{ fontSize: 14, marginBottom: 6 }}>✉️ {selected.email}</p>}
+            {selected.addresses && selected.addresses[0] && (
+              <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>📍 {selected.addresses[0].line1}, {selected.addresses[0].city}, {selected.addresses[0].postcode}</p>
+            )}
+            <div style={{ marginTop: 14, display: 'flex', gap: 8 }}>
+              <a href={'https://wa.me/' + selected.phone.replace(/[^0-9]/g, '') + '?text=Hi ' + encodeURIComponent(selected.name) + ', this is JK Seasonal. How can we help you?'}
+                target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ color: '#25D366', borderColor: '#25D366', textDecoration: 'none' }}>
+                💬 WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="card" style={{ padding: '18px 20px', marginBottom: 14 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Summary</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '12px 16px', textAlign: 'center' }}>
+                <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>{customerOrders.length}</p>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL ORDERS</p>
+              </div>
+              <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '12px 16px', textAlign: 'center' }}>
+                <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>EUR {totalSpend.toFixed(0)}</p>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL SPEND</p>
+              </div>
+            </div>
+          </div>
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Order History</p>
+            {customerOrders.length === 0 ? (
+              <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>No orders yet</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {customerOrders.map(function(o) {
+                  return (
+                    <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid var(--border-light)' }}>
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 700 }}>#{o.id}</p>
+                        <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{o.items && o.items.length} items · {o.status}</p>
+                      </div>
+                      <p style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>EUR {(o.total || 0).toFixed(2)}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -589,14 +719,10 @@ export default function AdminPage() {
         {tab === 'products' && <ProductsTab />}
         {tab === 'orders' && <OrdersTab />}
         {tab === 'categories' && <CategoriesTab />}
-        {tab === 'customers' && (
-          <div className="empty-state">
-            <div className="icon">👥</div>
-            <h3>Customer Management</h3>
-            <p>Coming in Phase 2</p>
-          </div>
-        )}
+        {tab === 'customers' && <CustomersTab />}
       </div>
     </div>
   );
 }
+// Note: CustomersTab is already handled in the main file
+// This patch adds the full customers implementation
