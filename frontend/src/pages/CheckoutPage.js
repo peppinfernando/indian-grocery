@@ -206,11 +206,17 @@ export default function CheckoutPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Phone Number *</label>
-                  <input type="tel" placeholder="+353 87 123 4567" value={phone}
-                    onChange={e => setPhone(e.target.value)} style={inp(errors.phone)}
-                    onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                    onBlur={e => e.target.style.borderColor = errors.phone ? 'var(--danger)' : 'var(--border)'}
-                  />
+                  <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: errors.phone ? '1.5px solid var(--danger)' : '1.5px solid var(--border)' }}>
+                    <input type="text" value={isdCode}
+                      onChange={e => setIsdCode(e.target.value.replace(/[^+0-9]/g, ''))}
+                      style={{ width: 68, flexShrink: 0, textAlign: 'center', background: 'var(--surface-2)', fontWeight: 700, borderRight: '1.5px solid var(--border)', color: 'var(--primary)', WebkitTextFillColor: 'var(--primary)', fontSize: 13, padding: '14px 8px', border: 'none', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box' }}
+                      maxLength={5} placeholder="+353" />
+                    <input type="tel" placeholder="87 123 4567" value={phone}
+                      onChange={e => setPhone(e.target.value.replace(/[^0-9 -]/g, ''))}
+                      style={{ ...inp(false), borderRadius: 0, border: 'none', flex: 1 }}
+                      maxLength={12} />
+                  </div>
+                  <p style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 3 }}>ISD code prefilled — edit if outside Ireland</p>
                   {errors.phone && <span style={{ fontSize: 12, color: 'var(--danger)' }}>Required</span>}
                 </div>
               </div>
