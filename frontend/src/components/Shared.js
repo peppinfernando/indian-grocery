@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart, useAuth } from '../context/AppContext';
 
-const WHATSAPP_NUMBER = '353895722935';
+const WHATSAPP_NUMBER = '353894722934';
 
 export function Header() {
   const { totalItems } = useCart();

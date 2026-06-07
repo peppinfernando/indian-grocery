@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getFeatured, getCategories, getSeasonal } from '../hooks/useApi';
 import { ProductCard } from '../components/Shared';
 
-const WHATSAPP = '353895722935';
+const WHATSAPP = '353894722934';
 
 function Footer() {
   return (

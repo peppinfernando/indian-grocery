@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth, useToast } from '../context/AppContext';
 import { getDashboard, getProducts, getOrders, getCategories, getCustomers, updateProduct, updateOrderStatus, deleteProduct } from '../hooks/useApi';
 
-const ADMIN_WHATSAPP = '353894722935';
+const ADMIN_WHATSAPP = '353894722934';
 const CLOUD_NAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || '';
 const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET || '';
 
