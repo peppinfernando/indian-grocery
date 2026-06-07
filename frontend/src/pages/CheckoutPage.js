@@ -54,6 +54,7 @@ export default function CheckoutPage() {
   const total = subtotal + delivery;
 
   const [name, setName] = useState(user?.name || '');
+  const [isdCode, setIsdCode] = useState('+353');
   const [phone, setPhone] = useState('');
   const [line1, setLine1] = useState('');
   const [line2, setLine2] = useState('');
@@ -125,7 +126,7 @@ export default function CheckoutPage() {
       const orderData = {
         customer_id: user?.customer_id || null,
         guest_name: user ? null : name,
-        guest_phone: user ? null : phone,
+        guest_phone: user ? null : (isdCode + phone.replace(/\s/g, '').replace(/^0/, '')),
         items: items.map(i => ({ ...i })),
         delivery_address: { label: 'Home', line1, line2, city, postcode, instructions },
         notes: notes || null
